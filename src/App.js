@@ -16,6 +16,20 @@ export default class App extends Component {
     name: '',
     number: '',
   };
+  
+  componentDidMount() {
+    const data = localStorage.getItem('contacts');
+    const parsedData = JSON.parse(data);
+    if (parsedData) {
+      this.setState({contacts: parsedData})
+    };
+  }
+
+  componentDidUpdate(prevState, prevPropos) {
+    if(prevState.contacts !== this.state.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
 
   addNewContact =obj => {
     const { contacts } = this.state;
