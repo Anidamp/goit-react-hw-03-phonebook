@@ -1,42 +1,44 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import s from './ContactForm.module.css';
 import { v4 as uuidv4 } from 'uuid';
+import PropTypes from 'prop-types';
 
-export default class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
+export default function ContactForm ({ addNewContact }) {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    switch (name) {
+      case'name' :
+       setName(value);
+       break;
+      case 'number':
+        setNumber(value);
+        break;
+      default: 
+      return;
+    }
   };
 
-  handleChange = e => {
-    const { name, value } = e.currentTarget;
-    this.setState({ [name]: value });
-  };
-
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    const { name, number } = this.state;
     const contact = {
       name,
       number,
       id: uuidv4(),
     };
-    this.setState({ contact });
-    this.props.addNewContact(contact);
-    this.reset();
+    addNewContact(contact);
+    reset();
   };
 
-  reset = () => {
-    this.setState({ 
-    name: '',
-    number: '' });
+  const reset = () => {
+    setName('');
+    setNumber('')
   };
 
-  render() {
-    const { name, number } = this.state;
-    const { handleSubmit, handleChange } = this;
-    return (
-      <div>
+  return (
         <form className={s.form} onSubmit={handleSubmit}>
           <label>
             Name
@@ -68,7 +70,9 @@ export default class ContactForm extends Component {
             Add contact
           </button>
         </form>
-      </div>
     );
-  }
 }
+
+ContactForm.propTypes = {
+  addNewContact: PropTypes.func.isRequired,
+};
